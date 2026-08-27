@@ -117,6 +117,10 @@ fi
     unset debugflags
   fi
 
+  # Full RELRO: -z now disables lazy binding so the loader can map the GOT
+  # read-only at startup, removing it as a target for arbitrary-write exploits.
+  export LDFLAGS="-Wl,-z,relro,-z,now${LDFLAGS:+ $LDFLAGS}"
+
   /usr/src/ruby/configure "${configure_args[@]}" || {
     cat config.log | grep flags=
     exit 1
